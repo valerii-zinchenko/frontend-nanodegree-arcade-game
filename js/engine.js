@@ -23,6 +23,7 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        pause = false,
         lastTime;
 
     canvas.width = 505;
@@ -33,6 +34,10 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
+		if (pause) {
+			return;
+		}
+
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -67,6 +72,20 @@ var Engine = (function(global) {
         reset();
         lastTime = Date.now();
         main();
+
+		document.addEventListener('keyup', function(ev) {
+			switch (ev.keyCode) {
+				case 27:
+					pause = !pause;
+
+					if (!pause) {
+						lastTime = Date.now();
+						main();
+					}
+
+					break;
+			}
+		});
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -107,24 +126,25 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            numRows = 6,
-            numCols = 5,
+        var rowImages = [],
             row, col;
+
+		for (row = 0; row < NWaters; row++) {
+			rowImages.push('images/water-block.png');
+		}
+		for (row = 0; row < NRoads; row++) {
+			rowImages.push('images/stone-block.png');
+		}
+		for (row = 0; row < NGrass; row++) {
+			rowImages.push('images/grass-block.png');
+		}
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
+        for (row = 0; row < gridSize[0]; row++) {
+            for (col = 0; col < gridSize[1]; col++) {
                 /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate
                  * to start drawing and the y coordinate to start drawing.
@@ -132,7 +152,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * dx, row * dy);
             }
         }
 
@@ -172,7 +192,7 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png'
-    ]);
+    ].concat(players));
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window

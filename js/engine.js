@@ -127,8 +127,8 @@ var Engine = (function(global) {
 			}
 		}
 
-		// restart the engine by collision
-		if (isCollisionHappens) {
+		// restart the engine by collision or when the player have reached the water
+		if (isCollisionHappens || player.y === 0) {
 			reset();
 		}
 	}
@@ -160,7 +160,7 @@ var Engine = (function(global) {
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        for (row = 0; row < gridSize[0]; row++) {
+        for (row = 0; row < gridSize[0]-1; row++) {
             for (col = 0; col < gridSize[1]; col++) {
                 /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate

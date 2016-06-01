@@ -26,8 +26,8 @@ var Engine = (function(global) {
         pause = false,
         lastTime;
 
-    canvas.width = 505;
-    canvas.height = 606;
+    canvas.width = gridSize[1] * dx;
+    canvas.height = gridSize[0] * dy;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -99,7 +99,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -115,6 +115,23 @@ var Engine = (function(global) {
         });
         player.update();
     }
+
+	function checkCollisions() {
+		var isCollisionHappens = false;
+
+		for (var n = 0, N = allEnemies.length; n < N; n++) {
+			var enemy = allEnemies[n];
+			if (enemy.y === player.y && Math.floor(enemy.x) === player.x) {
+				isCollisionHappens = true;
+				break;
+			}
+		}
+
+		// restart the engine by collision
+		if (isCollisionHappens) {
+			reset();
+		}
+	}
 
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
@@ -179,7 +196,10 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+		allEnemies.forEach(function(item) {
+			item.reset();
+		});
+		player.reset();
     }
 
     /* Go ahead and load all of the images we know we're going to need to

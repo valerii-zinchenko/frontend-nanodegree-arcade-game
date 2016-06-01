@@ -11,6 +11,7 @@ function randomNumber (min, max) {
 	return Math.round(min + Math.random() * (max - min));
 }
 
+// --------------------------------------------------------------------------------
 /**
  * Abstract character.
  *
@@ -24,6 +25,8 @@ var Character = function(sprite) {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
 	this.sprite = sprite;
+
+	this.reset();
 };
 // Path to the sprite/image
 Character.prototype.sprite = "";
@@ -55,7 +58,16 @@ Character.prototype.render = function(){
 	ctx.drawImage(Resources.get(this.sprite), this.x * dx, this.y * dy);
 };
 
+/**
+ * Reset the character
+ *
+ * @abstract
+ */
+Character.prototype.reset = function(){};
+// --------------------------------------------------------------------------------
 
+
+// --------------------------------------------------------------------------------
 /**
  * Enemy class
  *
@@ -64,31 +76,54 @@ Character.prototype.render = function(){
  */
 var Enemy = function() {
 	Enemy.prototype.constructor.call(this, 'images/enemy-bug.png');
-
-	this.y = randomNumber(NWaters, NRoads);
-	this.speed = randomNumber(1, 3);
 };
 Enemy.prototype = Object.create(Character.prototype);
 
+Enemy.prototype.x = -1;
 Enemy.prototype.speed = 1;	// 1 dx per second
 
 Enemy.prototype.update = function(dt) {
-	this.x += dt * this.speed;
+	if (this.x > gridSize[1]) {
+		this.reset();
+	} else {
+		this.x += dt * this.speed;
+	}
 };
+
+Enemy.prototype.reset = function() {
+	this.x = -1;
+	this.y = randomNumber(NWaters, NRoads);
+	this.speed = randomNumber(1, 3);
+};
+// --------------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------------
+// a set of available player characters
+var players = [
+	'images/char-boy.png',
+	'images/char-cat-girl.png',
+	'images/char-horn-girl.png',
+	'images/char-pink-girl.png',
+	'images/char-princess-girl.png'
+];
 
 /**
  * Player class
  *
  * @constructor
- * @param {String} sprite - Path to the image/sprite
+ * @param {String} id - ID of the player's skin
  */
 var Player = function(id) {
 	Player.prototype.constructor.call(this, players[id || 0]);
-
-	this.x = randomNumber(0, 5);
 };
 Player.prototype = Object.create(Character.prototype);
-Player.prototype.y = NWaters + NRoads;
+Player.prototype.y = gridSize[0]-2;
+
+Player.prototype.reset = function() {
+	this.x = randomNumber(0, gridSize[1]-1);
+	this.y = gridSize[0]-2;
+};
 
 /**
  * Handle user controls
@@ -112,15 +147,8 @@ Player.prototype.handleInput = function(direction){
 			break;
 	}
 };
+// --------------------------------------------------------------------------------
 
-// a set of available player characters
-var players = [
-	'images/char-boy.png',
-	'images/char-cat-girl.png',
-	'images/char-horn-girl.png',
-	'images/char-pink-girl.png',
-	'images/char-princess-girl.png'
-];
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies

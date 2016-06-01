@@ -131,19 +131,27 @@ Player.prototype.reset = function() {
 Player.prototype.handleInput = function(direction){
 	switch (direction) {
 		case 'left':
-			this.x--;
+			if (this.x > 0) {
+				this.x--;
+			}
 			break;
 
 		case 'up':
-			this.y--;
+			if (this.y > 0) {
+				this.y--;
+			}
 			break;
 
 		case 'right':
-			this.x++;
+			if (this.x < gridSize[1]-1) {
+				this.x++;
+			}
 			break;
 
 		case 'down':
-			this.y++;
+			if (this.y < gridSize[0]-2) {
+				this.y++;
+			}
 			break;
 	}
 };

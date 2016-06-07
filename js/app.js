@@ -2,11 +2,23 @@
 var dx = 101;
 // Size of one Y-step
 var dy = 83;
-var NWaters = 1;
-var NRoads = 4;
-var NGrass = 2;
-var gridSize = [NWaters + NRoads + NGrass, 6];
 
+// Define the amount of water lines
+var NWaters = 1;
+// Define the amount of grass lines
+var NGrass = 2;
+// Define the amount of road lines
+var NRoads = Math.floor(window.innerHeight / dy) - NWaters - NGrass;
+// Game grid size
+var gridSize = [NWaters + NRoads + NGrass, Math.floor(window.innerWidth / dx)];
+
+/**
+ * Generate a random number in defined range.
+ *
+ * @param {Number} min - Minimal possible random value
+ * @param {Number} max - Maximal possible random value
+ * @return {Number}
+ */
 function randomNumber (min, max) {
 	return Math.round(min + Math.random() * (max - min));
 }
@@ -80,7 +92,8 @@ var Enemy = function() {
 Enemy.prototype = Object.create(Character.prototype);
 
 Enemy.prototype.x = -1;
-Enemy.prototype.speed = 1;	// 1 dx per second
+// Speed of the bug (1dx/s)
+Enemy.prototype.speed = 1;
 
 Enemy.prototype.update = function(dt) {
 	if (this.x > gridSize[1]) {
@@ -93,7 +106,7 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.reset = function() {
 	this.x = -1;
 	this.y = randomNumber(NWaters, NRoads);
-	this.speed = randomNumber(1, 3);
+	this.speed = randomNumber(1, gridSize[1]/3);
 };
 // --------------------------------------------------------------------------------
 
@@ -115,7 +128,7 @@ var players = [
  * @param {String} id - ID of the player's skin
  */
 var Player = function(id) {
-	Player.prototype.constructor.call(this, players[id || 0]);
+	Player.prototype.constructor.call(this, players[id || randomNumber(0, players.length-1)]);
 };
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.y = gridSize[0]-2;
@@ -162,7 +175,7 @@ Player.prototype.handleInput = function(direction){
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [];
-for (var i = 0; i < NRoads; i++) {
+for (var i = 0; i <= NRoads; i++) {
 	allEnemies.push(new Enemy());
 }
 var player = new Player();

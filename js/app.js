@@ -133,7 +133,17 @@ var Player = function(id) {
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.y = gridSize[0]-2;
 
+// Amount of lives
+Player.prototype.lives = 3;
+
 Player.prototype.reset = function() {
+	this.lives = Player.prototype.lives;
+
+	this.resetPosition();
+};
+
+// Reset the positions
+Player.prototype.resetPosition = function() {
 	this.x = randomNumber(0, gridSize[1]-1);
 	this.y = gridSize[0]-2;
 };

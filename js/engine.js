@@ -123,13 +123,20 @@ var Engine = (function(global) {
 			var enemy = allEnemies[n];
 			if (enemy.y === player.y && Math.floor(enemy.x) === player.x) {
 				isCollisionHappens = true;
+				player.lives--;
 				break;
 			}
 		}
 
-		// restart the engine by collision or when the player have reached the water
-		if (isCollisionHappens || player.y === 0) {
+		// restart the engine when the amount of the player's lives is 0
+		if (player.lives === 0) {
 			reset();
+			return;
+		}
+
+		// reset the player's position by collision with an enemy or by reaching the water
+		if (isCollisionHappens || player.y === 0) {
+			player.resetPosition();
 		}
 	}
 

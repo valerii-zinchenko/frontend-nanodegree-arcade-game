@@ -31,11 +31,11 @@ function randomNumber (min, max) {
  * @param {String} sprite - Path to the image/sprite
  */
 var Character = function(sprite) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+	// Variables applied to each of our instances go here,
+	// we've provided one for you to get started
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+	// The image/sprite for our enemies, this uses
+	// a helper we've provided to easily load images
 	this.sprite = sprite;
 
 	this.reset();

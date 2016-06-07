@@ -123,13 +123,13 @@ var Engine = (function(global) {
 			var enemy = allEnemies[n];
 			if (enemy.y === player.y && Math.floor(enemy.x) === player.x) {
 				isCollisionHappens = true;
-				player.lives--;
+				player.reduceLife();
 				break;
 			}
 		}
 
 		// restart the engine when the amount of the player's lives is 0
-		if (player.lives === 0) {
+		if (player.hearts.length === 0) {
 			reset();
 			return;
 		}
@@ -218,7 +218,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+		'images/Heart.png'
     ].concat(players));
     Resources.onReady(init);
 

@@ -37,8 +37,6 @@ var Character = function(sprite) {
 	// The image/sprite for our enemies, this uses
 	// a helper we've provided to easily load images
 	this.sprite = sprite;
-
-	this.reset();
 };
 // Path to the sprite/image
 Character.prototype.sprite = "";
@@ -76,6 +74,22 @@ Character.prototype.render = function(){
  * @abstract
  */
 Character.prototype.reset = function(){};
+// --------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------
+/**
+ * Heart
+ * @constructor
+ * @param {Number} x - X coordinate of the heart
+ * @param {Number} y - Y coordinate of the heart
+ */
+var Heart = function(x, y) {
+	Heart.prototype.constructor.call(this, 'images/Heart.png');
+
+	this.x = x;
+	this.y = y;
+};
+Heart.prototype = Object.create(Character.prototype);
 // --------------------------------------------------------------------------------
 
 
@@ -125,22 +139,38 @@ var players = [
  * Player class
  *
  * @constructor
- * @param {String} id - ID of the player's skin
  */
-var Player = function(id) {
-	Player.prototype.constructor.call(this, players[id || randomNumber(0, players.length-1)]);
+var Player = function() {
+	Player.prototype.constructor.call(this, players[randomNumber(0, players.length-1)]);
 };
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.y = gridSize[0]-2;
 
-// Amount of lives
+// Default amount of lives
 Player.prototype.lives = 3;
+// Player's hearts
+Player.prototype.hearts = [];
+
+Player.prototype.render = function() {
+	Character.prototype.render.call(this);
+
+	this.hearts.forEach(function(heart) {
+		heart.render();
+	});
+};
 
 Player.prototype.reset = function() {
-	this.lives = Player.prototype.lives;
+	for (var n = 0; n < Player.prototype.lives; n++) {
+		this.hearts.push(new Heart(n, 0));
+	}
 
 	this.resetPosition();
 };
+
+// Reduce the amount of player's hearts
+Player.prototype.reduceLife = function() {
+	this.hearts.pop();
+}
 
 // Reset the positions
 Player.prototype.resetPosition = function() {

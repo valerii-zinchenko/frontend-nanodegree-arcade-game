@@ -150,6 +150,8 @@ Player.prototype.y = gridSize[0]-2;
 Player.prototype.lives = 3;
 // Player's hearts
 Player.prototype.hearts = [];
+// Scores
+Player.prototype.scores = 0;
 
 Player.prototype.render = function() {
 	Character.prototype.render.call(this);
@@ -160,6 +162,8 @@ Player.prototype.render = function() {
 };
 
 Player.prototype.reset = function() {
+	this.scores = Player.prototype.scores;
+
 	for (var n = 0; n < Player.prototype.lives; n++) {
 		this.hearts.push(new Heart(n, 0));
 	}
@@ -170,6 +174,7 @@ Player.prototype.reset = function() {
 // Reduce the amount of player's hearts
 Player.prototype.reduceLife = function() {
 	this.hearts.pop();
+	player.resetPosition();
 }
 
 // Reset the positions
@@ -192,6 +197,10 @@ Player.prototype.handleInput = function(direction){
 		case 'up':
 			if (this.y > 0) {
 				this.y--;
+			} else {
+				// player has reached the water
+				this.scores++;
+				this.resetPosition();
 			}
 			break;
 

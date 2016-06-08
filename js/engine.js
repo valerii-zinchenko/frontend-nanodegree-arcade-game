@@ -24,6 +24,7 @@ var Engine = (function(global) {
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         pause = false,
+		end = false,
         lastTime;
 
     canvas.width = gridSize[1] * dx;
@@ -34,7 +35,7 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
-		if (pause) {
+		if (pause || end) {
 			return;
 		}
 
@@ -72,20 +73,6 @@ var Engine = (function(global) {
         reset();
         lastTime = Date.now();
         main();
-
-		document.addEventListener('keyup', function(ev) {
-			switch (ev.keyCode) {
-				case 27:
-					pause = !pause;
-
-					if (!pause) {
-						lastTime = Date.now();
-						main();
-					}
-
-					break;
-			}
-		});
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -127,17 +114,6 @@ var Engine = (function(global) {
 				break;
 			}
 		}
-
-		// restart the engine when the amount of the player's lives is 0
-		if (player.hearts.length === 0) {
-			reset();
-			return;
-		}
-
-		// reset the player's position by collision with an enemy or by reaching the water
-		if (isCollisionHappens || player.y === 0) {
-			player.resetPosition();
-		}
 	}
 
     /* This function initially draws the "game level", it will then call
@@ -147,6 +123,12 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
+		// restart the engine when the amount of the player's lives is 0
+		if (player.hearts.length === 0) {
+			gameOver(player.scores);
+			return;
+		}
+
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -203,11 +185,32 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
+		end = false;
+		pause = false;
+
 		allEnemies.forEach(function(item) {
 			item.reset();
 		});
 		player.reset();
     }
+
+	function gameOver(scores) {
+		end = true;
+
+		ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		ctx.font = '40px serfi';
+		ctx.fillStyle = '#000';
+		ctx.textAlign = 'center';
+		[
+			'Game over',
+			'Total scores: ' + scores,
+			'Press Enter to restart'
+		].forEach(function(txt, index) {
+			ctx.fillText(txt, canvas.width/2, canvas.height/2 + (index - 1) * 50);
+		});
+	};
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
@@ -222,6 +225,28 @@ var Engine = (function(global) {
 		'images/Heart.png'
     ].concat(players));
     Resources.onReady(init);
+
+	document.addEventListener('keyup', function(ev) {
+		switch (ev.keyCode) {
+			case 13:	// Enter
+				// Restart the game
+				if (end) {
+					init();
+				}
+				break;
+
+			case 27:	// Esc
+				pause = !pause;
+
+				// Unpause the game
+				if (!pause) {
+					lastTime = Date.now();
+					main();
+				}
+
+				break;
+		}
+	});
 
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developers can use it more easily

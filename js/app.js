@@ -1,3 +1,5 @@
+'use strict';
+
 // Size of one X-step
 var dx = 101;
 // Size of one Y-step

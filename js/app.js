@@ -86,7 +86,7 @@ Character.prototype.reset = function(){};
  * @param {Number} y - Y coordinate of the heart
  */
 var Heart = function(x, y) {
-	Heart.prototype.constructor.call(this, 'images/Heart.png');
+	Character.call(this, 'images/Heart.png');
 
 	this.x = x;
 	this.y = y;
@@ -104,7 +104,7 @@ Heart.prototype.constructor = Heart;
  * @param {String} sprite - Path to the image/sprite
  */
 var Enemy = function() {
-	Enemy.prototype.constructor.call(this, 'images/enemy-bug.png');
+	Character.call(this, 'images/enemy-bug.png');
 };
 Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
@@ -145,7 +145,7 @@ var players = [
  * @constructor
  */
 var Player = function() {
-	Player.prototype.constructor.call(this, players[randomNumber(0, players.length-1)]);
+	Character.call(this, players[randomNumber(0, players.length-1)]);
 };
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;

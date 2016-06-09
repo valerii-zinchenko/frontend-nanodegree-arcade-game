@@ -5,7 +5,7 @@ frontend-nanodegree-arcade-game
 Installation
 ------------
 
-No installation is required. Just open this game and enjoy :)
+No installation is required. Just [open it][http://valerii-zinchenko.github.io/frontend-nanodegree-arcade-game/] and enjoy :)
 
 The game board is depends from you window size ;)
 

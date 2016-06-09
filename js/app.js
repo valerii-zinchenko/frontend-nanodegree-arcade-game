@@ -90,6 +90,7 @@ var Heart = function(x, y) {
 	this.y = y;
 };
 Heart.prototype = Object.create(Character.prototype);
+Heart.prototype.constructor = Heart;
 // --------------------------------------------------------------------------------
 
 
@@ -104,6 +105,7 @@ var Enemy = function() {
 	Enemy.prototype.constructor.call(this, 'images/enemy-bug.png');
 };
 Enemy.prototype = Object.create(Character.prototype);
+Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.x = -1;
 // Speed of the bug (1dx/s)
@@ -144,6 +146,7 @@ var Player = function() {
 	Player.prototype.constructor.call(this, players[randomNumber(0, players.length-1)]);
 };
 Player.prototype = Object.create(Character.prototype);
+Player.prototype.constructor = Player;
 Player.prototype.y = gridSize[0]-2;
 
 // Default amount of lives

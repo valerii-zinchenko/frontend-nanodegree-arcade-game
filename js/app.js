@@ -174,7 +174,7 @@ Player.prototype.reset = function() {
 // Reduce the amount of player's hearts
 Player.prototype.reduceLife = function() {
 	this.hearts.pop();
-	player.resetPosition();
+	this.resetPosition();
 }
 
 // Reset the positions
